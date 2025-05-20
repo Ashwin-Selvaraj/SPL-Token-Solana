@@ -1,0 +1,18 @@
+[
+  {
+    "address": "2YaZSTKcf8W8tEJLv6jkeRCDVtntENwS8bpVd9koBZTk",
+    "amount": "1",
+    "index": 0,
+    "proof": [
+      "0x2a2f148bc01d305d3af0a21fecb309816066d2d215e4bcf5709e626ca9d03a56020000000000000000"
+    ]
+  },
+  {
+    "address": "3qfmA6WT19mbMK4DXAZ2J16VihPh5Ax4ihawyc9wx5mP",
+    "amount": "2",
+    "index": 1,
+    "proof": [
+      "0x16f2a33af92687125b7249e9a9d0905bca722de652fb145232fa2eef483ca8df010000000000000000"
+    ]
+  }
+]

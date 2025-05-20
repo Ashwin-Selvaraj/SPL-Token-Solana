@@ -1,0 +1,9 @@
+/Users/ashwin/Desktop/Rust/SPL-Token-Solana/target/sbpf-solana-solana/release/deps/libspl_associated_token_account_client-c798f00ba6d24a9c.rmeta: /Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/lib.rs /Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/address.rs /Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/instruction.rs
+
+/Users/ashwin/Desktop/Rust/SPL-Token-Solana/target/sbpf-solana-solana/release/deps/libspl_associated_token_account_client-c798f00ba6d24a9c.rlib: /Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/lib.rs /Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/address.rs /Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/instruction.rs
+
+/Users/ashwin/Desktop/Rust/SPL-Token-Solana/target/sbpf-solana-solana/release/deps/spl_associated_token_account_client-c798f00ba6d24a9c.d: /Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/lib.rs /Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/address.rs /Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/instruction.rs
+
+/Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/lib.rs:
+/Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/address.rs:
+/Users/ashwin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/spl-associated-token-account-client-2.0.0/src/instruction.rs:

@@ -110,7 +110,7 @@ solanaTransferSPL();
 
 // const owner = '4kqEbt7VwmePYcC6Qi8dYrqrorLmfTU1N9sGoet3Rd22peqvyc17qZQwEVG2rUfNcUg7va5BwM9Z913Du28XnJYH';
 // // Your custom token's mint address
-// const tokenMint = new PublicKey('DA3XKAhA7k2hvDQPtMiG2Vi3mUM34b1opq6aqEPFf6rU');
+// const tokenMint = new PublicKey('JCbkaacRtqB84vD3wsvgecG5VGQPUSL6ziA4GXkjRnEJ');
 // const sourceWallet = Keypair.fromSecretKey(bs58.decode(owner));
 // const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 

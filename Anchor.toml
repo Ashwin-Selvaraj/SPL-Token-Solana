@@ -1,10 +1,13 @@
 [toolchain]
-package_manager = "yarn"
 anchor_version = "0.31.1"
+package_manager = "yarn"
 
 [features]
 resolution = true
 skip-lint = false
+
+[programs.devnet]
+merkle_airdrop = "9RenkeTQuM8nfvMkNLUA3fqWhn8ueHNkF3BfW3CyLf6S"
 
 [programs.localnet]
 token_program = "9kKjjGAGoDEAvCwXGNVe3sX9k5T85emWFtW4u3DSJ5t2"

@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/token_contract.json`.
  */
 export type TokenContract = {
-  "address": "DA3XKAhA7k2hvDQPtMiG2Vi3mUM34b1opq6aqEPFf6rU",
+  "address": "JCbkaacRtqB84vD3wsvgecG5VGQPUSL6ziA4GXkjRnEJ",
   "metadata": {
     "name": "tokenContract",
     "version": "0.1.0",
@@ -296,6 +296,87 @@ export type TokenContract = {
       ]
     },
     {
+      "name": "setMintAuthority",
+      "discriminator": [
+        67,
+        127,
+        155,
+        187,
+        100,
+        174,
+        103,
+        121
+      ],
+      "accounts": [
+        {
+          "name": "splTokenMint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  112,
+                  108,
+                  45,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                  45,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "anotherAuthority",
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "transferToken",
       "discriminator": [
         219,
@@ -357,6 +438,21 @@ export type TokenContract = {
       "args": []
     }
   ],
+  "accounts": [
+    {
+      "name": "vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    }
+  ],
   "types": [
     {
       "name": "initTokenParams",
@@ -377,6 +473,22 @@ export type TokenContract = {
           },
           {
             "name": "decimals",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "splTokenMintBump",
             "type": "u8"
           }
         ]
