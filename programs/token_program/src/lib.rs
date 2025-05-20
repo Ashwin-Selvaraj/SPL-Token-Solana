@@ -261,21 +261,60 @@ pub mod token_contract {
         Ok(())
     }
 
-    pub fn set_mint_authority(ctx: Context<SetMintTokenAuthority>) -> Result<()> {
-        let seeds = &[
-            b"spl-token-mint".as_ref(),
-            &[ctx.bumps.spl_token_mint],
-        ];
-        let signer = &[&seeds[..]];
+    // pub fn set_mint_authority(ctx: Context<SetMintTokenAuthority>) -> Result<()> {
+    //     let seeds = &[
+    //         b"spl-token-mint".as_ref(),
+    //         &[ctx.bumps.spl_token_mint],
+    //     ];
+    //     let signer = &[&seeds[..]];
 
+    //     let cpi_context = CpiContext::new_with_signer(
+    //         ctx.accounts.token_program.to_account_info(),
+    //         token::SetAuthority {
+    //             current_authority: ctx.accounts.spl_token_mint.to_account_info(),
+    //             account_or_mint: ctx.accounts.spl_token_mint.to_account_info(),
+    //         },
+    //         signer,
+    //     );
+    //     token::set_authority(
+    //         cpi_context,
+    //         AuthorityType::MintTokens,
+    //         Some(ctx.accounts.another_authority.key()),
+    //     )?;
+    //     Ok(())
+    // }
+
+
+    // pub fn set_mint_authority(ctx: Context<SetMintTokenAuthority>) -> Result<()> {
+    //     let cpi_context = CpiContext::new(
+    //         ctx.accounts.token_program.to_account_info(),
+    //         token::SetAuthority {
+    //             current_authority: ctx.accounts.payer.to_account_info(), // <--- important
+    //             account_or_mint: ctx.accounts.spl_token_mint.to_account_info(),
+    //         },
+    //     );
+    
+    //     token::set_authority(
+    //         cpi_context,
+    //         AuthorityType::MintTokens,
+    //         Some(ctx.accounts.another_authority.key()),
+    //     )?;
+    //     Ok(())
+    // }
+
+    pub fn set_mint_authority(ctx: Context<SetMintTokenAuthority>) -> Result<()> {
+        let seeds = &["mint".as_bytes(), &[ctx.bumps.spl_token_mint]];
+        let signer = [&seeds[..]];
+    
         let cpi_context = CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
             token::SetAuthority {
                 current_authority: ctx.accounts.spl_token_mint.to_account_info(),
                 account_or_mint: ctx.accounts.spl_token_mint.to_account_info(),
             },
-            signer,
+            &signer,
         );
+    
         token::set_authority(
             cpi_context,
             AuthorityType::MintTokens,
@@ -283,6 +322,7 @@ pub mod token_contract {
         )?;
         Ok(())
     }
+
 }
 
 #[derive(Accounts)]
@@ -388,39 +428,22 @@ pub struct UnFreeze<'info> {
     pub authority: AccountInfo<'info>,
 }
 
-#[account]
-pub struct Vault {
-    pub bump: u8,
-    pub spl_token_mint_bump: u8,
-}
-
-// Set Mint Token Authority context
 #[derive(Accounts)]
 pub struct SetMintTokenAuthority<'info> {
     #[account(
         mut,
-         seeds = [
-            b"spl-token-mint".as_ref(),
-         ],
+        seeds = [b"mint"],
         bump,
     )]
-    pub spl_token_mint: Account<'info, Mint>, // ---> 1
-
-    #[account(
-        seeds = [
-            b"vault"
-        ],
-        bump = vault.bump, // --> 2
-    )]
-    pub vault: Account<'info, Vault>,
+    pub spl_token_mint: Account<'info, Mint>,
 
     #[account(mut)]
-    pub payer: Signer<'info>, // ---> 3
+    pub payer: Signer<'info>,
 
-    pub another_authority: Signer<'info>, // ---> 4
+    pub another_authority: Signer<'info>,
 
-    pub system_program: Program<'info, System>, // ---> 5
-    pub token_program: Program<'info, Token>,   // ---> 6
-
-    pub rent: Sysvar<'info, Rent>, // ---> 7
+    pub system_program: Program<'info, System>,
+    pub token_program: Program<'info, Token>,
+    pub rent: Sysvar<'info, Rent>,
 }
+

@@ -316,36 +316,9 @@ export type TokenContract = {
               {
                 "kind": "const",
                 "value": [
-                  115,
-                  112,
-                  108,
-                  45,
-                  116,
-                  111,
-                  107,
-                  101,
-                  110,
-                  45,
                   109,
                   105,
                   110,
-                  116
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "vault",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  118,
-                  97,
-                  117,
-                  108,
                   116
                 ]
               }
@@ -438,21 +411,6 @@ export type TokenContract = {
       "args": []
     }
   ],
-  "accounts": [
-    {
-      "name": "vault",
-      "discriminator": [
-        211,
-        8,
-        232,
-        43,
-        2,
-        152,
-        117,
-        119
-      ]
-    }
-  ],
   "types": [
     {
       "name": "initTokenParams",
@@ -473,22 +431,6 @@ export type TokenContract = {
           },
           {
             "name": "decimals",
-            "type": "u8"
-          }
-        ]
-      }
-    },
-    {
-      "name": "vault",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
-            "name": "splTokenMintBump",
             "type": "u8"
           }
         ]

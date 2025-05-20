@@ -310,36 +310,9 @@
               {
                 "kind": "const",
                 "value": [
-                  115,
-                  112,
-                  108,
-                  45,
-                  116,
-                  111,
-                  107,
-                  101,
-                  110,
-                  45,
                   109,
                   105,
                   110,
-                  116
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "vault",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  118,
-                  97,
-                  117,
-                  108,
                   116
                 ]
               }
@@ -432,21 +405,6 @@
       "args": []
     }
   ],
-  "accounts": [
-    {
-      "name": "Vault",
-      "discriminator": [
-        211,
-        8,
-        232,
-        43,
-        2,
-        152,
-        117,
-        119
-      ]
-    }
-  ],
   "types": [
     {
       "name": "InitTokenParams",
@@ -467,22 +425,6 @@
           },
           {
             "name": "decimals",
-            "type": "u8"
-          }
-        ]
-      }
-    },
-    {
-      "name": "Vault",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
-            "name": "spl_token_mint_bump",
             "type": "u8"
           }
         ]
