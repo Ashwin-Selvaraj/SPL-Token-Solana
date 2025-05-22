@@ -8,7 +8,8 @@ const stringPrivateKey = bs58.encode(privateKey58);
 
 const owner = stringPrivateKey;
 //converting the program id to a public key
-const splToken = new PublicKey("AYPhJd5QmN1qoxqCGJkrcMipNMNExMYMFfYfm4djDfCT");
+// const splToken = new PublicKey("AYPhJd5QmN1qoxqCGJkrcMipNMNExMYMFfYfm4djDfCT");
+const splToken = new PublicKey("EvfJoTiJ2AxnC6Xo1BHyi8JtPQ7MNP53WkrCCVPknA1i");
 const sourceWallet = Keypair.fromSecretKey(bs58.decode(owner));
 
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
@@ -23,7 +24,6 @@ const genATA = async () => {
         false
     );
     console.log("ATA - Assciated Token Account", ata);
-    
 
     let transaction = new Transaction();
         //building the transactiuon

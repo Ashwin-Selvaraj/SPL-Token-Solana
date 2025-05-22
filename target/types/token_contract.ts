@@ -31,16 +31,16 @@ export type TokenContract = {
           "writable": true
         },
         {
-          "name": "tokenProgram",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
-        },
-        {
           "name": "from",
           "writable": true
         },
         {
           "name": "authority",
           "signer": true
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         }
       ],
       "args": [
@@ -68,13 +68,15 @@ export type TokenContract = {
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "account"
+          "name": "account",
+          "writable": true
         },
         {
           "name": "mint"
         },
         {
-          "name": "authority"
+          "name": "authority",
+          "signer": true
         }
       ],
       "args": []
@@ -379,7 +381,12 @@ export type TokenContract = {
           "signer": true
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "unfreezeAccount",

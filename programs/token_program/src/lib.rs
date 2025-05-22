@@ -200,7 +200,7 @@ pub mod token_contract {
         Ok(())
     }
 
-    pub fn transfer_token(ctx: Context<TransferToken>) -> Result<()> {
+    pub fn transfer_token(ctx: Context<TransferToken>, amount: u64) -> Result<()> {
         // Create the Transfer struct for our context
         let transfer_instruction = Transfer {
             from: ctx.accounts.from.to_account_info(),
@@ -213,7 +213,7 @@ pub mod token_contract {
         let cpi_ctx = CpiContext::new(cpi_program, transfer_instruction);
 
         // Execute anchor's helper function to transfer tokens
-        anchor_spl::token::transfer(cpi_ctx, 5)?;
+        anchor_spl::token::transfer(cpi_ctx, amount)?;
 
         Ok(())
     }
@@ -260,47 +260,6 @@ pub mod token_contract {
 
         Ok(())
     }
-
-    // pub fn set_mint_authority(ctx: Context<SetMintTokenAuthority>) -> Result<()> {
-    //     let seeds = &[
-    //         b"spl-token-mint".as_ref(),
-    //         &[ctx.bumps.spl_token_mint],
-    //     ];
-    //     let signer = &[&seeds[..]];
-
-    //     let cpi_context = CpiContext::new_with_signer(
-    //         ctx.accounts.token_program.to_account_info(),
-    //         token::SetAuthority {
-    //             current_authority: ctx.accounts.spl_token_mint.to_account_info(),
-    //             account_or_mint: ctx.accounts.spl_token_mint.to_account_info(),
-    //         },
-    //         signer,
-    //     );
-    //     token::set_authority(
-    //         cpi_context,
-    //         AuthorityType::MintTokens,
-    //         Some(ctx.accounts.another_authority.key()),
-    //     )?;
-    //     Ok(())
-    // }
-
-
-    // pub fn set_mint_authority(ctx: Context<SetMintTokenAuthority>) -> Result<()> {
-    //     let cpi_context = CpiContext::new(
-    //         ctx.accounts.token_program.to_account_info(),
-    //         token::SetAuthority {
-    //             current_authority: ctx.accounts.payer.to_account_info(), // <--- important
-    //             account_or_mint: ctx.accounts.spl_token_mint.to_account_info(),
-    //         },
-    //     );
-    
-    //     token::set_authority(
-    //         cpi_context,
-    //         AuthorityType::MintTokens,
-    //         Some(ctx.accounts.another_authority.key()),
-    //     )?;
-    //     Ok(())
-    // }
 
     pub fn set_mint_authority(ctx: Context<SetMintTokenAuthority>) -> Result<()> {
         let seeds = &["mint".as_bytes(), &[ctx.bumps.spl_token_mint]];
@@ -381,6 +340,34 @@ pub struct MintTokens<'info> {
 }
 
 #[derive(Accounts)]
+pub struct InitializeMint<'info> {
+    #[account(
+        init,
+        payer = payer,
+        mint::decimals = 9,
+        mint::authority = mint_authority,
+        mint::freeze_authority = freeze_authority,
+        seeds = [b"mint"],
+        bump
+    )]
+    pub mint: Account<'info, Mint>,
+
+    /// The account that can mint tokens
+    pub mint_authority: Signer<'info>,
+
+    /// The account that can freeze token accounts
+    pub freeze_authority: Signer<'info>,
+
+    #[account(mut)]
+    pub payer: Signer<'info>,
+
+    pub system_program: Program<'info, System>,
+    pub token_program: Program<'info, Token>,
+    pub rent: Sysvar<'info, Rent>,
+}
+
+
+#[derive(Accounts)]
 pub struct TransferToken<'info> {
     pub token_program: Program<'info, Token>,
     /// CHECK: The associated token account that we are transferring the token from
@@ -395,27 +382,32 @@ pub struct TransferToken<'info> {
 
 #[derive(Accounts)]
 pub struct BurnToken<'info> {
-    /// CHECK: This is the token that we want to mint
     #[account(mut)]
-    pub mint: Account<'info, Mint>,
+    pub mint: Account<'info, Mint>, // the token mint to burn from
+
+    #[account(mut)]
+    pub from: Account<'info, TokenAccount>, // the user's token account to burn from
+
+    pub authority: Signer<'info>, // must be the owner of `from`
+
     pub token_program: Program<'info, Token>,
-    /// CHECK: This is the token account that we want to mint tokens to
-    #[account(mut)]
-    pub from: AccountInfo<'info>,
-    /// CHECK: the authority of the mint account
-    pub authority: Signer<'info>,
 }
 
 #[derive(Accounts)]
 pub struct Freeze<'info> {
     pub token_program: Program<'info, Token>,
-    /// CHECK: This is
+
+    /// CHECK: Safe. This is the token account to freeze.
+    #[account(mut)]
     pub account: AccountInfo<'info>,
-    /// CHECK: This is the token that we want to mint
+
+    /// CHECK: Safe. This is the mint associated with the token account.
     pub mint: AccountInfo<'info>,
-    /// CHECK: the authority of the mint account
-    pub authority: AccountInfo<'info>,
+
+    /// CHECK: Safe. This must be the current freeze authority of the mint.
+    pub authority: Signer<'info>,
 }
+
 
 #[derive(Accounts)]
 pub struct UnFreeze<'info> {

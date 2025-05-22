@@ -10,10 +10,13 @@ skip-lint = false
 merkle_airdrop = "9RenkeTQuM8nfvMkNLUA3fqWhn8ueHNkF3BfW3CyLf6S"
 
 [programs.localnet]
-token_program = "9kKjjGAGoDEAvCwXGNVe3sX9k5T85emWFtW4u3DSJ5t2"
+my_program = "JCbkaacRtqB84vD3wsvgecG5VGQPUSL6ziA4GXkjRnEJ" # your program ID
+token_program = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" # official SPL Token
+
 
 [registry]
 url = "https://api.apr.dev"
+
 
 [provider]
 cluster = "devnet"
