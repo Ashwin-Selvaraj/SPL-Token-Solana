@@ -131,7 +131,7 @@ describe("spl program test", () => {
   //   const context = {
   //     splTokenMint: mint,
   //     payer: payer,
-  //     anotherAuthority: payer, // ✅ CEO's wallet or whoever you're transferring authority to
+  //     anotherAuthority: payer, // :white_check_mark: CEO's wallet or whoever you're transferring authority to
   //     systemProgram: web3.SystemProgram.programId,
   //     tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
   //     rent: web3.SYSVAR_RENT_PUBKEY
@@ -172,7 +172,7 @@ describe("spl program test", () => {
   
   //     const tx = new anchor.web3.Transaction().add(createAtaIx);
   //     await program.provider.sendAndConfirm(tx, []);
-  //     console.log("✅ Created receiver ATA");
+  //     console.log(":white_check_mark: Created receiver ATA");
   //   }
 
   //   const context = {
@@ -192,7 +192,7 @@ describe("spl program test", () => {
   //     .rpc();
   
   //   await program.provider.connection.confirmTransaction(txHash, "finalized");
-  //   console.log("🚀 Custom token transfer TX:", `https://explorer.solana.com/tx/${txHash}?cluster=devnet`);
+  //   console.log(":rocket: Custom token transfer TX:", `https://explorer.solana.com/tx/${txHash}?cluster=devnet`);
   
   // });
 
@@ -217,7 +217,7 @@ describe("spl program test", () => {
   //     );
   //     const tx = new anchor.web3.Transaction().add(createAtaIx);
   //     await program.provider.sendAndConfirm(tx, []);
-  //     console.log("✅ Created token account");
+  //     console.log(":white_check_mark: Created token account");
   //   }
 
   //   // Get token balance before burn
@@ -240,41 +240,87 @@ describe("spl program test", () => {
   //     .rpc();
 
   //   await program.provider.connection.confirmTransaction(txHash, "finalized");
-  //   console.log("🚀 Burn token TX:", `https://explorer.solana.com/tx/${txHash}?cluster=devnet`);
+  //   console.log(":rocket: Burn token TX:", `https://explorer.solana.com/tx/${txHash}?cluster=devnet`);
 
   //   // Get token balance after burn
   //   const postBalance = await program.provider.connection.getTokenAccountBalance(tokenAccount);
   //   console.log("Token balance after burn:", postBalance.value.uiAmount);
   // });
 
-  it("freeze account", async () => {
-    const mintInfo = await getMint(program.provider.connection, mint, undefined, TOKEN_PROGRAM_ID);
-    console.log("Freeze Authority:", mintInfo.freezeAuthority?.toBase58() || "None");
+  // it("freeze account", async () => {
+  //   const mintInfo = await getMint(program.provider.connection, mint, undefined, TOKEN_PROGRAM_ID);
+  //   console.log("Freeze Authority:", mintInfo.freezeAuthority?.toBase58() || "None");
   
 
-    const tokenAccount = anchor.utils.token.associatedAddress({
-      mint: mint,
-      owner: payer,
-    })
+  //   const tokenAccount = anchor.utils.token.associatedAddress({
+  //     mint: mint,
+  //     owner: payer,
+  //   })
+  
+  //   const context = {
+  //     tokenProgram: TOKEN_PROGRAM_ID,
+  //     account: tokenAccount,
+  //     mint: mint,
+  //     authority: payer,
+  //   };
+  
+  //   const txHash = await program.methods
+  //     .freezeAccount()
+  //     .accounts(context)
+  //     .rpc();
+  
+  //   console.log(":white_check_mark: Freeze TX:", `https://explorer.solana.com/tx/${txHash}?cluster=devnet`);
+  // });
+
+  it("set merkle root", async () => {
+    const wallet = anchor.AnchorProvider.env().wallet as anchor.Wallet;
+    const signer = wallet.payer;
+  
+    console.log("Current wallet pubkey:", signer.publicKey.toBase58());
+  
+    let claimConfigPda: PublicKey;
+    let bump: number;
+    [claimConfigPda, bump] = PublicKey.findProgramAddressSync(
+      [Buffer.from("claim_config_v2")],
+      program.programId
+    );
+    
+  
+    // Only call initialize if PDA doesn't exist
+    const accountInfo = await program.provider.connection.getAccountInfo(claimConfigPda);
+    if (!accountInfo) {
+      await program.rpc.initializeClaimConfig(bump, {
+        accounts: {
+          claimConfig: claimConfigPda,
+          authority: signer.publicKey, // ✅ required by your IDL
+          systemProgram: web3.SystemProgram.programId,
+        },
+        signers: [signer],
+      });
+    } else {
+      console.log("PDA already exists. Skipping initialization.");
+    }
+    
+    const newMerkleRoot = Array(32).fill(6);
   
     const context = {
-      tokenProgram: TOKEN_PROGRAM_ID,
-      account: tokenAccount,
-      mint: mint,
-      authority: payer,
+      claimConfig: claimConfigPda,
     };
   
     const txHash = await program.methods
-      .freezeAccount()
+      .setMerkleRoot(newMerkleRoot)
       .accounts(context)
       .rpc();
   
-    console.log("✅ Freeze TX:", `https://explorer.solana.com/tx/${txHash}?cluster=devnet`);
+    await program.provider.connection.confirmTransaction(txHash, "finalized");
+    console.log(
+      ":rocket: Merkle Root set for token TX:",
+      `https://explorer.solana.com/tx/${txHash}?cluster=devnet`
+    );
+  
+    const claimConfigAccount = await program.account.claimConfig.fetch(claimConfigPda);
+    console.log(":mag: Stored Merkle Root:", claimConfigAccount.merkleRoot);
+    assert.deepStrictEqual(claimConfigAccount.merkleRoot, newMerkleRoot);
   });
   
 });
-
-
-
-
-

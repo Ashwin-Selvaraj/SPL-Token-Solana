@@ -76,6 +76,64 @@
       "args": []
     },
     {
+      "name": "initialize_claim_config",
+      "discriminator": [
+        225,
+        252,
+        31,
+        212,
+        57,
+        44,
+        12,
+        97
+      ],
+      "accounts": [
+        {
+          "name": "claim_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  108,
+                  97,
+                  105,
+                  109,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  95,
+                  118,
+                  50
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "initiate_token",
       "discriminator": [
         168,
@@ -292,6 +350,36 @@
       ]
     },
     {
+      "name": "set_merkle_root",
+      "discriminator": [
+        43,
+        24,
+        91,
+        60,
+        240,
+        137,
+        28,
+        102
+      ],
+      "accounts": [
+        {
+          "name": "claim_config",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "set_mint_authority",
       "discriminator": [
         67,
@@ -412,7 +500,59 @@
       "args": []
     }
   ],
+  "accounts": [
+    {
+      "name": "ClaimConfig",
+      "discriminator": [
+        97,
+        212,
+        121,
+        122,
+        13,
+        163,
+        67,
+        234
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "You are not authorized to update the Merkle root."
+    },
+    {
+      "code": 6001,
+      "name": "MerkleRootUnchanged",
+      "msg": "Merkle root is unchanged."
+    }
+  ],
   "types": [
+    {
+      "name": "ClaimConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "merkle_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
     {
       "name": "InitTokenParams",
       "type": {

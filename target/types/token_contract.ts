@@ -82,6 +82,64 @@ export type TokenContract = {
       "args": []
     },
     {
+      "name": "initializeClaimConfig",
+      "discriminator": [
+        225,
+        252,
+        31,
+        212,
+        57,
+        44,
+        12,
+        97
+      ],
+      "accounts": [
+        {
+          "name": "claimConfig",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  108,
+                  97,
+                  105,
+                  109,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  95,
+                  118,
+                  50
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "initiateToken",
       "discriminator": [
         168,
@@ -298,6 +356,36 @@ export type TokenContract = {
       ]
     },
     {
+      "name": "setMerkleRoot",
+      "discriminator": [
+        43,
+        24,
+        91,
+        60,
+        240,
+        137,
+        28,
+        102
+      ],
+      "accounts": [
+        {
+          "name": "claimConfig",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newRoot",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "setMintAuthority",
       "discriminator": [
         67,
@@ -418,7 +506,59 @@ export type TokenContract = {
       "args": []
     }
   ],
+  "accounts": [
+    {
+      "name": "claimConfig",
+      "discriminator": [
+        97,
+        212,
+        121,
+        122,
+        13,
+        163,
+        67,
+        234
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "unauthorized",
+      "msg": "You are not authorized to update the Merkle root."
+    },
+    {
+      "code": 6001,
+      "name": "merkleRootUnchanged",
+      "msg": "Merkle root is unchanged."
+    }
+  ],
   "types": [
+    {
+      "name": "claimConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "merkleRoot",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
     {
       "name": "initTokenParams",
       "type": {
