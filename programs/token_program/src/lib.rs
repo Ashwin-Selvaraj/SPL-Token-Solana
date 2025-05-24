@@ -16,6 +16,7 @@ declare_id!("JCbkaacRtqB84vD3wsvgecG5VGQPUSL6ziA4GXkjRnEJ");
 pub mod token_contract {
     use super::*;
 
+
     pub fn initiate_token(_ctx: Context<InitToken>, metadata: InitTokenParams) -> Result<()> {
         let seeds = &["mint".as_bytes(), &[_ctx.bumps.mint]];
         let signer = [&seeds[..]];
@@ -211,9 +212,79 @@ pub mod token_contract {
         claim_config.merkle_root = new_root;
         Ok(())
     }
+
+
+    // Token Claiming Logic - Merkle Tree
     
 
+    
+
+    pub fn claim_tokens(
+        ctx: Context<ClaimTokens>,
+        bump: u8,
+        amount: u64,
+        proof: Vec<[u8; 32]>,
+    ) -> Result<()> {
+        let user_key = ctx.accounts.user.key();
+        let leaf = anchor_lang::solana_program::keccak::hashv(&[
+            user_key.as_ref(),
+            &amount.to_le_bytes(),
+        ])
+        .0;
+        require!(
+            verify_merkle_proof(&proof, &ctx.accounts.claim_config.merkle_root, &leaf),
+            ErrorCode::MerkleProofVerificationFailed
+        );
+    
+        let status = &mut ctx.accounts.claim_status;
+        require!(!status.claimed, ErrorCode::AlreadyClaimed);
+        status.claimed = true;
+    
+        let cpi_accounts = Transfer {
+            from: ctx.accounts.token_vault.to_account_info(),
+            to: ctx.accounts.user_token_account.clone(),
+            authority: ctx.accounts.claim_config.to_account_info(),
+        };
+    
+        // let signer_seeds = &[b"claim_config_v3", &[bump]];
+        let signer_seeds: &[&[u8]] = &[b"claim_config_v3", &[bump]];
+        let signer = &[&signer_seeds[..]];
+    
+        let cpi_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            cpi_accounts,
+            signer,
+        );
+    
+        token::transfer(cpi_ctx, amount)?;
+    
+        Ok(())
+    }
+
 }
+
+
+fn verify_merkle_proof(
+    proof: &Vec<[u8; 32]>,
+    root: &[u8; 32],
+    leaf: &[u8; 32],
+) -> bool {
+    use anchor_lang::solana_program::keccak::hashv;
+
+    let mut computed = *leaf;
+
+    for p in proof.iter() {
+        let data = if computed <= *p {
+            [computed.as_ref(), p.as_ref()].concat()
+        } else {
+            [p.as_ref(), computed.as_ref()].concat()
+        };
+        computed = hashv(&[&data]).0;
+    }
+
+    &computed == root
+}
+
 
 #[derive(Accounts)]
 #[instruction(params: InitTokenParams)]
@@ -438,10 +509,67 @@ pub struct ClaimConfig {
 
 #[derive(Accounts)]
 pub struct SetMerkleRoot<'info> {
-    #[account(mut)]
+    #[account(
+        mut,
+        seeds = [b"claim_config_v3"],
+        bump,
+        has_one = authority   // ✅ This is fine IF...
+    )]
     pub claim_config: Account<'info, ClaimConfig>,
-    pub authority: Signer<'info>,
+    
+    pub authority: Signer<'info>, //
 }
+
+
+// Token Claiming Logic - Merkle Tree
+
+#[account]
+pub struct ClaimStatus {
+    pub claimed: bool,
+}
+
+#[derive(Accounts)]
+#[instruction(bump: u8)]
+pub struct ClaimTokens<'info> {
+    #[account(
+        mut,
+        seeds = [b"claim_config_v3"],
+        bump,
+        has_one = authority // ✅ will now match the account below
+    )]
+    pub claim_config: Account<'info, ClaimConfig>,
+
+    #[account(
+        init_if_needed,
+        payer = user,
+        seeds = [b"claim_status", user.key().as_ref()],
+        bump,
+        space = 8 + 1
+    )]
+    pub claim_status: Account<'info, ClaimStatus>,
+
+    /// CHECK: Verified via CPI
+    #[account(mut)]
+    pub user_token_account: AccountInfo<'info>,
+
+    #[account(mut)]
+    pub mint: Account<'info, Mint>,
+
+    #[account(mut)]
+    pub user: Signer<'info>,
+
+    #[account(mut)]
+    pub token_vault: Account<'info, TokenAccount>,
+
+    /// ✅ Required to satisfy `has_one = authority`
+    pub authority: Signer<'info>, 
+
+    pub token_program: Program<'info, Token>,
+
+    pub system_program: Program<'info, System>,
+}
+
+
 
 #[error_code]
 pub enum ErrorCode {
@@ -450,4 +578,11 @@ pub enum ErrorCode {
 
     #[msg("Merkle root is unchanged.")]
     MerkleRootUnchanged,
+
+    #[msg("You have already claimed.")]
+    AlreadyClaimed,
+    
+    #[msg("Invalid Merkle proof.")]
+    MerkleProofVerificationFailed,
 }
+

@@ -51,6 +51,134 @@ export type TokenContract = {
       ]
     },
     {
+      "name": "claimTokens",
+      "discriminator": [
+        108,
+        216,
+        210,
+        231,
+        0,
+        212,
+        42,
+        64
+      ],
+      "accounts": [
+        {
+          "name": "claimConfig",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  108,
+                  97,
+                  105,
+                  109,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  95,
+                  118,
+                  51
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "claimStatus",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  108,
+                  97,
+                  105,
+                  109,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  117,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "userTokenAccount",
+          "writable": true
+        },
+        {
+          "name": "mint",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tokenVault",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "✅ Required to satisfy `has_one = authority`"
+          ],
+          "signer": true,
+          "relations": [
+            "claimConfig"
+          ]
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "freezeAccount",
       "discriminator": [
         253,
@@ -370,11 +498,38 @@ export type TokenContract = {
       "accounts": [
         {
           "name": "claimConfig",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  108,
+                  97,
+                  105,
+                  109,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103,
+                  95,
+                  118,
+                  51
+                ]
+              }
+            ]
+          }
         },
         {
           "name": "authority",
-          "signer": true
+          "signer": true,
+          "relations": [
+            "claimConfig"
+          ]
         }
       ],
       "args": [
@@ -523,6 +678,19 @@ export type TokenContract = {
         67,
         234
       ]
+    },
+    {
+      "name": "claimStatus",
+      "discriminator": [
+        22,
+        183,
+        249,
+        157,
+        247,
+        95,
+        150,
+        96
+      ]
     }
   ],
   "errors": [
@@ -535,6 +703,16 @@ export type TokenContract = {
       "code": 6001,
       "name": "merkleRootUnchanged",
       "msg": "Merkle root is unchanged."
+    },
+    {
+      "code": 6002,
+      "name": "alreadyClaimed",
+      "msg": "You have already claimed."
+    },
+    {
+      "code": 6003,
+      "name": "merkleProofVerificationFailed",
+      "msg": "Invalid Merkle proof."
     }
   ],
   "types": [
@@ -559,6 +737,18 @@ export type TokenContract = {
           {
             "name": "bump",
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "claimStatus",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "claimed",
+            "type": "bool"
           }
         ]
       }

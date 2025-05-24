@@ -1,0 +1,1 @@
+for<'a, 'b> fn(&'a anchor_lang::prelude::AccountInfo<'b>) -> std::result::Result<anchor_lang::prelude::Pubkey, anchor_lang::error::Error> {authority}
