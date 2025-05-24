@@ -116,7 +116,7 @@ export type TokenContract = {
                   103,
                   95,
                   118,
-                  50
+                  51
                 ]
               }
             ]
@@ -371,6 +371,10 @@ export type TokenContract = {
         {
           "name": "claimConfig",
           "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
         }
       ],
       "args": [

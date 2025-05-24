@@ -281,7 +281,7 @@ describe("spl program test", () => {
     let claimConfigPda: PublicKey;
     let bump: number;
     [claimConfigPda, bump] = PublicKey.findProgramAddressSync(
-      [Buffer.from("claim_config_v2")],
+      [Buffer.from("claim_config_v3")],
       program.programId
     );
     
@@ -301,7 +301,7 @@ describe("spl program test", () => {
       console.log("PDA already exists. Skipping initialization.");
     }
     
-    const newMerkleRoot = Array(32).fill(6);
+    const newMerkleRoot = Array(32).fill(24);
   
     const context = {
       claimConfig: claimConfigPda,
@@ -320,6 +320,7 @@ describe("spl program test", () => {
   
     const claimConfigAccount = await program.account.claimConfig.fetch(claimConfigPda);
     console.log(":mag: Stored Merkle Root:", claimConfigAccount.merkleRoot);
+    console.log(":bust_in_silhouette: Current Authority:", claimConfigAccount.authority.toBase58());
     assert.deepStrictEqual(claimConfigAccount.merkleRoot, newMerkleRoot);
   });
   

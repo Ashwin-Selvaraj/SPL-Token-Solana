@@ -197,7 +197,11 @@ pub mod token_contract {
     pub fn set_merkle_root(ctx: Context<SetMerkleRoot>, new_root: [u8; 32]) -> Result<()> {
         let claim_config = &mut ctx.accounts.claim_config;
     
-        // No authority check here at all!
+        require_keys_eq!(
+            ctx.accounts.authority.key(),
+            claim_config.authority,
+            ErrorCode::Unauthorized
+        );        
     
         require!(
             claim_config.merkle_root != new_root,
@@ -413,7 +417,7 @@ pub struct InitializeClaimConfig<'info> {
         init,
         payer = authority,
         space = 8 + 32 + 32 + 1,
-        seeds = [b"claim_config_v2"],
+        seeds = [b"claim_config_v3"],
         bump
     )]
     pub claim_config: Account<'info, ClaimConfig>,
@@ -436,9 +440,8 @@ pub struct ClaimConfig {
 pub struct SetMerkleRoot<'info> {
     #[account(mut)]
     pub claim_config: Account<'info, ClaimConfig>,
+    pub authority: Signer<'info>,
 }
-
-
 
 #[error_code]
 pub enum ErrorCode {

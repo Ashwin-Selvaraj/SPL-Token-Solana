@@ -110,7 +110,7 @@
                   103,
                   95,
                   118,
-                  50
+                  51
                 ]
               }
             ]
@@ -365,6 +365,10 @@
         {
           "name": "claim_config",
           "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
         }
       ],
       "args": [
