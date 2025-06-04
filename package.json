@@ -4,7 +4,7 @@
   "description": "Merkle tree generator for Solana airdrop",
   "main": "scripts/generateMerkleTree.js",
   "scripts": {
-    "generate": "node scripts/generateMerkleTree.js"
+    "generate": "node ./generate-merkle-tree.cjs"
   },
   "type": "module",
   "dependencies": {

@@ -1,0 +1,21 @@
+{
+  "root": "0x4bc8315f6bb2861bd348e69f079949188dd3dfccb6d474360895c9fccf03c723",
+  "users": [
+    {
+      "address": "2YaZSTKcf8W8tEJLv6jkeRCDVtntENwS8bpVd9koBZTk",
+      "amount": "10",
+      "leaf": "0x15ec6880964b2a03ce418d7f24c33cafcc0065bd8823585adb2ab75b28e17d97",
+      "proof": [
+        "0x676f7d59904047abe95fd61388424f19ef7e0fd1e7a592549c74ed8b7ecd293f"
+      ]
+    },
+    {
+      "address": "3qfmA6WT19mbMK4DXAZ2J16VihPh5Ax4ihawyc9wx5mP",
+      "amount": "20",
+      "leaf": "0x676f7d59904047abe95fd61388424f19ef7e0fd1e7a592549c74ed8b7ecd293f",
+      "proof": [
+        "0x15ec6880964b2a03ce418d7f24c33cafcc0065bd8823585adb2ab75b28e17d97"
+      ]
+    }
+  ]
+}

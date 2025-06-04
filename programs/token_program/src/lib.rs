@@ -202,7 +202,7 @@ pub mod token_contract {
             ctx.accounts.authority.key(),
             claim_config.authority,
             ErrorCode::Unauthorized
-        );        
+        );
     
         require!(
             claim_config.merkle_root != new_root,
@@ -517,7 +517,7 @@ pub struct SetMerkleRoot<'info> {
     )]
     pub claim_config: Account<'info, ClaimConfig>,
     
-    pub authority: Signer<'info>, //
+    pub authority: Signer<'info>, 
 }
 
 
